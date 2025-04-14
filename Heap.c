@@ -3,7 +3,7 @@
 
 void buildHeap(int[], int);
 void Heapify(int[], int, int);
-void swap(int, int);
+void swap(int*, int*);
 void print_bianaty_heap(int[], int);
 
 void buildHeap(int arr[], int size)
@@ -25,30 +25,32 @@ void Heapify(int arr[], int index, int size)
     if(right <= size && arr[right] > arr[max])
         max = right;
     if(index != max)
+    {
         swap(&arr[max], &arr[index]);
         Heapify(arr, max, size);
+    }
 }
 
 void swap(int *x, int *y)
 {
     int temp;
 
-    temp = x;
-    x = y;
-    y = temp;
+    temp = *x;
+    *x = *y;
+    *y = temp;
 }
 
 void print_bianary_heap(int arr[], int size)
 {
     for(int i = 0; i < size; i++)
     {
-        printf("%d /n", arr[i]);
+        printf("%d \n", arr[i]);
     }
 }
 
 int main()
 {
-    int arr[] = (10, 20, 30, 40, 50, 60, 70);
+    int arr[] = {10, 20, 30, 40, 50, 60, 70};
     int size = sizeof(arr) / sizeof(arr[0]);
 
     printf("The Array Elements Are:\n");
