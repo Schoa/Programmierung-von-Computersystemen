@@ -1,3 +1,4 @@
+/*
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -93,4 +94,79 @@ int main() {
     printList(head);
 
     return 0;
+}
+*/
+
+#include<stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+}node;
+
+node *createLinkedList(int data) {
+    node *newNode = (node*)malloc(sizeof(node));
+    if(!newNode){
+        printf("ERROR: Memmory allocation failed \n");
+        exit(1);
+    }
+    
+    newNode -> data = data;
+    newNode -> next = NULL;
+    return newNode;
+}
+
+void insertAtBeginning(node **head, int data)
+{
+    node *newNode = createLinkedList(data);
+    newNode -> next = *head;
+    *head = newNode;
+}
+
+void printList(node* head)
+{
+    node* temp = head;
+    while(temp != NULL){
+        printf("%d -> ", temp -> data);
+        temp = temp -> next;
+    }
+    printf("NULL \n");
+}
+
+void deleteNode(node **head, int value) {
+    if(*head == NULL){
+        return;
+    }
+    if((*head) -> data == value){
+        node *temp = *head;
+        *head = (*head) -> next;
+        free(temp);
+        return;
+    }
+    node *current = *head;
+    while(current -> next != NULL && current -> next -> data != value) {
+        current = current-> next;
+    }
+    if(current -> next != NULL) {
+        node *temp = current -> next;
+        current -> next = current -> next -> next;
+        free(temp);
+    }
+}
+
+int main()
+{
+    struct Node* head = NULL;
+    
+    // Insert elements at the beginning of the list
+    insertAtBeginning(&head, 10);
+    insertAtBeginning(&head, 30);
+    insertAtBeginning(&head, 20);
+    insertAtBeginning(&head, 50);
+
+    // Print the linked list
+    printList(head); // Output: 50 20 30 10
+    deleteNode(&head, 20);
+    printList(head);
 }
