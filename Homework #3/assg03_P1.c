@@ -100,7 +100,7 @@ void deleteCustomer(Customer **head, const char *value) {
 int main() {
     Customer* head = NULL; // Initialize the head of the list to NULL
     int n; // Variable to store the user's choice
-    char ID[10]; // Variable to store the Customer ID
+    char ID[11]; // Variable to store the Customer ID
     char Name[30]; // Variable to store the Customer Name
     int Points; // Variable to store the Customer Points
 
