@@ -1,3 +1,10 @@
-ID: 2 Name: John Doe Critical Level: 5
-ID: 3 Name: Nguyen Van A Critical Level: 8
-ID: 5 Name: Emilia Jackson Critical Level: 6
+ID: 1 Name: 1 Critical Level: 1
+ID: 2 Name: 2 Critical Level: 2
+ID: 3 Name: 3 Critical Level: 3
+ID: 4 Name: 4 Critical Level: 4
+ID: 5 Name: 5 Critical Level: 5
+ID: 6 Name: 6 Critical Level: 6
+ID: 7 Name: 7 Critical Level: 7
+ID: 8 Name: 8 Critical Level: 8
+ID: 9 Name: 9 Critical Level: 9
+ID: 10 Name: 10 Critical Level: 10

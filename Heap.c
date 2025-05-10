@@ -1,66 +1,169 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-void buildHeap(int[], int);
-void Heapify(int[], int, int);
-void swap(int*, int*);
-void print_bianaty_heap(int[], int);
+// Declare a heap structure
+struct Heap {
+    int* arr;
+    int size;
+    int capacity;
+};
 
-void buildHeap(int arr[], int size)
+// define the struct Heap name
+typedef struct Heap heap;
+
+// forward declarations
+heap* createHeap(int capacity, int* nums);
+void insertHelper(heap* h, int index);
+void heapify(heap* h, int index);
+int extractMin(heap* h);
+void insert(heap* h, int data);
+
+// Define a createHeap function
+heap* createHeap(int capacity, int* nums)
 {
-    int i = size /2;
-    for (; i >= 0; i--)
-        Heapify(arr, i, size);
+    // Allocating memory to heap h
+    heap* h = (heap*)malloc(sizeof(heap));
+
+    // Checking if memory is allocated to h or not
+    if (h == NULL) {
+        printf("Memory error");
+        return NULL;
+    }
+    // set the values to size and capacity
+    h->size = 0;
+    h->capacity = capacity;
+
+    // Allocating memory to array
+    h->arr = (int*)malloc(capacity * sizeof(int));
+
+    // Checking if memory is allocated to h or not
+    if (h->arr == NULL) {
+        printf("Memory error");
+        return NULL;
+    }
+    int i;
+    for (i = 0; i < capacity; i++) {
+        h->arr[i] = nums[i];
+    }
+
+    h->size = i;
+    i = (h->size - 2) / 2;
+    while (i >= 0) {
+        heapify(h, i);
+        i--;
+    }
+    return h;
 }
 
-void Heapify(int arr[], int index, int size)
+// Defining insertHelper function
+void insertHelper(heap* h, int index)
 {
-    int left = 2 * index + 1;
-    int right = left + 1;
 
-    int max = index;
+    // Store parent of element at index
+    // in parent variable
+    int parent = (index - 1) / 2;
 
-    if(left <= size && arr[left] > arr[max])
-        max = left;
-    if(right <= size && arr[right] > arr[max])
-        max = right;
-    if(index != max)
-    {
-        swap(&arr[max], &arr[index]);
-        Heapify(arr, max, size);
+    if (h->arr[parent] > h->arr[index]) {
+        // Swapping when child is smaller
+        // than parent element
+        int temp = h->arr[parent];
+        h->arr[parent] = h->arr[index];
+        h->arr[index] = temp;
+
+        // Recursively calling insertHelper
+        insertHelper(h, parent);
     }
 }
 
-void swap(int *x, int *y)
+void heapify(heap* h, int index)
 {
-    int temp;
+    int left = index * 2 + 1;
+    int right = index * 2 + 2;
+    int min = index;
 
-    temp = *x;
-    *x = *y;
-    *y = temp;
+    // Checking whether our left or child element
+    // is at right index or not to avoid index error
+    if (left >= h->size || left < 0)
+        left = -1;
+    if (right >= h->size || right < 0)
+        right = -1;
+
+    // store left or right element in min if
+    // any of these is smaller that its parent
+    if (left != -1 && h->arr[left] < h->arr[index])
+        min = left;
+    if (right != -1 && h->arr[right] < h->arr[min])
+        min = right;
+
+    // Swapping the nodes
+    if (min != index) {
+        int temp = h->arr[min];
+        h->arr[min] = h->arr[index];
+        h->arr[index] = temp;
+
+        // recursively calling for their child elements
+        // to maintain min heap
+        heapify(h, min);
+    }
+}
+  
+int extractMin(heap* h)
+{
+    int deleteItem;
+
+    // Checking if the heap is empty or not
+    if (h->size == 0) {
+        printf("\nHeap id empty.");
+        return -999;
+    }
+
+    // Store the node in deleteItem that
+    // is to be deleted.
+    deleteItem = h->arr[0];
+
+    // Replace the deleted node with the last node
+    h->arr[0] = h->arr[h->size - 1];
+    // Decrement the size of heap
+    h->size--;
+
+    // Call minheapify_top_down for 0th index
+    // to maintain the heap property
+    heapify(h, 0);
+    return deleteItem;
 }
 
-void print_bianary_heap(int arr[], int size)
+// Define a insert function
+void insert(heap* h, int data)
 {
-    for(int i = 0; i < size; i++)
-    {
-        printf("%d \n", arr[i]);
+
+    // Checking if heap is full or not
+    if (h->size < h->capacity) {
+        // Inserting data into an array
+        h->arr[h->size] = data;
+        // Calling insertHelper function
+        insertHelper(h, h->size);
+        // Incrementing size of array
+        h->size++;
     }
+}
+
+void printHeap(heap* h)
+{
+
+    for (int i = 0; i < h->size; i++) {
+        printf("%d ", h->arr[i]);
+    }
+    printf("\n");
 }
 
 int main()
 {
-    int arr[] = {10, 20, 30, 40, 50, 60, 70};
-    int size = sizeof(arr) / sizeof(arr[0]);
+    int arr[9] = { 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+    heap* hp = createHeap(9, arr);
 
-    printf("The Array Elements Are:\n");
-    print_bianary_heap(arr, size);
-
-    printf("Constructing Heap...\n");
-    buildHeap(arr, size - 1);
-
-    printf("The Array Element Are:\n");
-    print_bianary_heap(arr, size);
+    printHeap(hp);
+    extractMin(hp);
+    printHeap(hp);
 
     return 0;
 }

@@ -4,7 +4,7 @@
 
 // Define the structure for the node in the BST
 typedef struct Node {
-    char ID[11]; // Admission ID
+    char ID[20]; // Admission ID
     char Name[30]; // Patient Name
     int Level; // Critical Level (1-10)
 
@@ -86,89 +86,88 @@ Patient* getSuccessor(Patient* root) {
     return current;
 }
 
-// Delete a Node
-Patient* delNode(Patient* root, const char *key) {
+// Delete a Node and indicate if deletion was successful
+Patient* delNode(Patient* root, const char* key, int* isDeleted) {
     // Base case: If the tree is empty
     if (root == NULL) {
+        *isDeleted = 0; // Deletion unsuccessful
         return root;
     }
 
     // Compare the key with the current node's ID
-    if (strcmp(key, root -> ID) < 0) {
+    if (strcmp(key, root->ID) < 0) {
         // Key is smaller, search in the left subtree
-        root -> left = delNode(root->left, key);
-    } else if (strcmp(key, root -> ID) > 0) {
+        root->left = delNode(root->left, key, isDeleted);
+    } else if (strcmp(key, root->ID) > 0) {
         // Key is larger, search in the right subtree
-        root -> right = delNode(root -> right, key);
+        root->right = delNode(root->right, key, isDeleted);
     } else {
         // Node to be deleted is found
+        *isDeleted = 1; // Mark deletion as successful
 
         // Case 1: Node has no left child
-        if (root -> left == NULL) {
-            Patient* temp = root -> right;
+        if (root->left == NULL) {
+            Patient* temp = root->right;
             free(root);
             return temp;
         }
 
         // Case 2: Node has no right child
-        if (root -> right == NULL) {
-            Patient* temp = root -> left;
+        if (root->right == NULL) {
+            Patient* temp = root->left;
             free(root);
             return temp;
         }
 
         // Case 3: Node has two children
         Patient* succ = getSuccessor(root); // Find the in-order successor
-        strcpy(root -> ID, succ -> ID);        // Copy the successor's ID
-        strcpy(root -> Name, succ -> Name);    // Copy the successor's Name
-        root->Level = succ -> Level;         // Copy the successor's Level
-        root->right = delNode(root -> right, succ -> ID); // Delete the successor
+        strcpy(root->ID, succ->ID);        // Copy the successor's ID
+        strcpy(root->Name, succ->Name);    // Copy the successor's Name
+        root->Level = succ->Level;         // Copy the successor's Level
+        root->right = delNode(root->right, succ->ID, isDeleted); // Delete the successor
     }
     return root;
 }
 
 // Inorder Traversal (Left, Root, Right)
 void inorderTraversal(Patient* root) {
-    printf("---Inorder Traversal--\n");
     if (root != NULL) {
-        inorderTraversal(root -> left);
-        printf("ID: %s Name: %s Critical Level: %d\n", root -> ID, root -> Name, root -> Level);
-        inorderTraversal(root -> right);
+        inorderTraversal(root->left);
+        printf("ID: %s Name: %s Critical Level: %d\n", root->ID, root->Name, root->Level);
+        inorderTraversal(root->right);
     }
 }
 
 // Preorder Traversal (Root, Left, Right)
 void preorderTraversal(Patient* root) {
-    printf("---Preorder Traversal---\n");
     if (root == NULL) {
         return;
     }
 
     // Print the Node
-    printf("ID: %s Name: %s Critical Level: %d\n", root -> ID, root -> Name, root -> Level);
-    
+    printf("ID: %s Name: %s Critical Level: %d\n", root->ID, root->Name, root->Level);
+
     // Recur on the left Subtree
-    preorderTraversal(root -> left);
+    preorderTraversal(root->left);
 
     // Recur on the right Subtree
-    preorderTraversal(root -> right);
+    preorderTraversal(root->right);
 }
 
-// Postorder Traversal(Left, Right, Root)
+// Postorder Traversal (Left, Right, Root)
 void postorderTraversal(Patient* root) {
-    printf("---Postorder Traversal---\n");
     if (root == NULL) {
         return;
     }
 
     // Recur on the Left Subtree
-    postorderTraversal(root -> left);
+    postorderTraversal(root->left);
 
     // Recur on the Right Subtree
-    postorderTraversal(root -> right);
+    postorderTraversal(root->right);
 
     // Print the Node
-    printf("ID: %s Name: %s Critical Level: %d\n", root -> ID, root -> Name, root -> Level);
+    printf("ID: %s Name: %s Critical Level: %d\n", root->ID, root->Name, root->Level);
 }
 
 // Function to return the maximum of two integers
@@ -187,8 +186,9 @@ int height(Patient* root) {
 // Function to print nodes of the tree at a given level
 void printGivenLevel(Patient* root, int level) {
     if (root == NULL) return;
-    if (level == 1) printf("%d ", root -> ID);
-    else if (level > 1) {
+    if (level == 1) {
+        printf("ID: %s Name: %s Critical Level: %d\n", root->ID, root->Name, root->Level);
+    } else if (level > 1) {
         printGivenLevel(root->left, level - 1);
         printGivenLevel(root->right, level - 1);
     }
@@ -205,28 +205,28 @@ void printGivenLevelToFile(Patient* root, int level, FILE* file) {
     }
 }
 
-// Level-Order Traversal and Save to File
+// Level-Order Traversal
 void levelorderTraversal(Patient* root) {
-    printf("---Level-order Traversal---\n");
     if (root == NULL) {
         printf("The tree is empty.\n");
         return;
     }
 
-    // Open the file for writing
+    // Open the file for writting
     FILE* file = fopen("hospital_bst.txt", "w");
     if (file == NULL) {
-        printf("Error: Unable to open file for writing.\n");
+        printf("ERROR: Unable to open file for writting\n");
         return;
     }
 
     int h = height(root); // Get the height of the tree
     for (int i = 1; i <= h; i++) {
-        printGivenLevelToFile(root, i, file); // Print each level to the file
+        printGivenLevel(root, i); // Print each level
     }
 
-    fclose(file); // Close the file
-    printf("---Level-order Traversal saved to hospital_bst.txt\n---");
+    // Close the file
+    fclose(file);
+    printf("---Level-order Traversal saved to hospital_bst.txt---\n");
 }
 
 // Free the allocated memory for the BST
@@ -274,16 +274,23 @@ void Critical(Patient* root) {
 
 // Function to print all Traversals
 void printAll(Patient* root) {
+    printf("\n---Inorder Traversal---\n");
     inorderTraversal(root);
+
+    printf("\n---Preorder Traversal---\n");
     preorderTraversal(root);
+
+    printf("\n---Postorder Traversal---\n");
     postorderTraversal(root);
+
+    printf("\n---Level-order Traversal---\n");
     levelorderTraversal(root);
 }
 
 int main() {
     Patient* root = NULL;
     int n;
-    char ID[11];
+    char ID[20];
     char Name[30];
     int Level;
 
@@ -322,8 +329,13 @@ int main() {
         case 3: // Delete Patient
             printf("Enter Patient ID to delete: ");
             scanf("%s", ID);
-            root = delNode(root, ID);
-            printf("Patient deleted successfully (if found).\n");
+            int isDeleted = 0;
+            root = delNode(root, ID, &isDeleted);
+            if (isDeleted) {
+                printf("Patient with ID '%s' deleted successfully.\n", ID);
+            } else {
+                printf("Patient with ID '%s' not found.\n", ID);
+            }
             break;
 
         case 4: // Traversals
