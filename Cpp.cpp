@@ -3,7 +3,7 @@
 # include <iostream>
 
 
-int main() 
+int main()
 {
     int num1, num2;
 
@@ -19,17 +19,17 @@ int main()
 // Prgram 2
 /*
 # include <iostream> // Input/Output
-# include <math.h> // Usual C lib header file for math 
+# include <math.h> // Usual C lib header file for math
 
 using namespace std;
 
-int main() 
+int main()
 {
     float x;
 
     cout << "Enter a real number: " << endl;
     // std::cout << "Enter real number: " << endl;
-    cin >> x; // scanf("%f", &x); in C 
+    cin >> x; // scanf("%f", &x); in C
 
      cout << "The square root  of " << x << " is: "
                 << sqrt(x) << endl;
@@ -69,7 +69,7 @@ void sort(int& x, int& y)
     }
 }
 
-int main(void) 
+int main(void)
 {
     int a = 9, b = 5;
     sort(a,b);
@@ -133,7 +133,7 @@ class Player : public Entity
     }
 };
 
- 
+
 
 int main() {
     Player player1;
@@ -209,6 +209,7 @@ int main() {
 }
 */
 
+/*
 #include <iostream>
 using namespace std;
 
@@ -223,5 +224,78 @@ int main() {
     cout << std::max(2.5, 1.2) << endl; // Calls max<double>(2.5, 1.2)
     cout << std::max('d', 'c') << endl; // Calls max<char>('a', 'b')
     cout << std::max("Hello", "World"); // Calls max<string?("Hello", "World")
+    return 0;
+}
+*/
+
+/*
+#include <iostream>
+
+using namespace std;
+#define SIZE 8
+
+int linearSearch(int arr[], int size, int key)
+{
+    for (int i = 0; i < size; i++)
+    { // Start from 0, not 1
+        if (arr[i] == key)
+        {
+            return 1; // Found
+        }
+    }
+    return 0; // Not found after checking all elements
+}
+
+int main()
+{
+    int array[SIZE] = {10, 20, 15, 68, 90, 18, 4, 100};
+    int key;
+
+    cout << "Search: ";
+    cin >> key;
+
+    if (linearSearch(array, SIZE, key) == 1)
+        cout << "Search Found: " << key << endl;
+    else
+        cout << "Search Not Found: " << key << endl;
+    return 0;
+}
+*/
+
+#include <iostream>
+
+using namespace std;
+#define SIZE 8
+
+int bianarySearch (int arr[], int size, int key) {
+    int low = 0, high = size -1;
+    int mid;
+
+    while (mid < high ) {
+        mid = (low + high) / 2;
+        if (arr[mid] == key) {
+            return mid;
+        }
+        else if (arr[mid] < high) {
+            low == mid;
+        }
+        else {
+            high == mid;
+        }
+        
+    }
+
+    return -1; 
+}
+
+int main() {
+    int array[SIZE] = {4, 10, 15, 18, 20, 68, 90, 100};
+    int key = 92;
+    int bianaryResult = bianarySearch(array, SIZE, key);
+
+    if (bianaryResult != -1)
+         cout << "Search Found: " << key << endl;
+    else
+        cout << "Search Not Found: " << key << endl;
     return 0;
 }
